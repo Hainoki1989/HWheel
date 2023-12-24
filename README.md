@@ -1,5 +1,5 @@
-# VNWheel
-This is open source force feedback wheel base on Arduino 1.8.10, future for teensy 4.0 600MHz :O!!!!!!
+# HWheel
+This is open source force feedback wheel base on Arduino
 
 The code use some libraries and files from other projects like:
 - adapt-ffb-joy 
@@ -10,22 +10,13 @@ The code use some libraries and files from other projects like:
 
 https://github.com/MartinBloedorn/libFilter
 
-It has not tested yet.
-
 Usage:
-- pin0,1,2 for encoder
+- pin0,1 for encoder
+- pin 2 for hall effect sensor.
 - pin 9, 10 for Pulse/dir; PWM+-
 - Modify WheelConfig to match your hardware setup
 
-bool initialRun = true; => run 1st time for calculate maxPositionChange, maxVelocity, maxAcceleration. after that you can set to false and assign directly to these variables (uncomment codes)
+I have modified this code for use with a wheel i have design (link to 3d printable files to be included) 
 
-    Wheel.encoder.maxPositionChange = 1151;
-    Wheel.encoder.maxVelocity  = 72;
-    Wheel.encoder.maxAcceleration = 33;
-
-
-PS: stm32 version is in development phase:
-
-https://youtu.be/qPKXuQauSpo
-
-https://youtu.be/B8nHdp_dTPk
+Added features are a soft stop for wheel limits, as setting the force straight to 255 was causing vibrations
+as i am using a cheaper 2 output encoder, i have added a hall effect sensor and a magnet to the main drive wheel which the encoder is attached to, when the magnet passes the sensor the Zpin is triggered, i have modified the code to correctly set the position to 0 the first time this happens.
