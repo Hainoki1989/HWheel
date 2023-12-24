@@ -31,6 +31,8 @@ class WheelConfig {
     uint8_t inertiaGainConfig;
     uint8_t frictionGainConfig;
     uint8_t totalGainConfig;
+
+    bool usesHallEffectForZ;
  
 
 };

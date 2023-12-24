@@ -40,9 +40,22 @@ void Encoder::initVariables() {
 
 void  Encoder::updatePosition() {
     
-  if (usePinZ) {
+  if (usePinZ) 
+  {
     currentPinZ = digitalReadFast(encoderPinZ);
-    if (z1stUp) {
+
+    if(!z1stUp)
+    {
+       if(!digitalReadFast(encoderPinZ))
+       {
+          currentPosition = 0;
+       }
+    }
+
+    /*
+
+    if (z1stUp) 
+    {
       correctPosition = correctPosition; //found correct position
       z1stUp = true;
     } else {
@@ -50,6 +63,7 @@ void  Encoder::updatePosition() {
         currentPosition = correctPosition;
       }
     }
+    */
   } 
   positionChange = currentPosition - lastPosition;
   uint32_t currentEncoderTime = (int32_t) millis();

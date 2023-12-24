@@ -22,12 +22,13 @@ bool initialRun = true;
 #include "PWM.h"
 Pwm pwm;
 
-void setup() {
+void setup() 
+{
   pinMode (PULSE, OUTPUT);
   pinMode (DIR, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(interruptA), calculateEncoderPostion, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(interruptB), calculateEncoderPostion, CHANGE);  pwm.begin();
-  
+  attachInterrupt(digitalPinToInterrupt(interruptB), calculateEncoderPostion, CHANGE);  
+  pwm.begin();
   pwm.setPWM(0);
   Wheel.begin();
   Input = Wheel.encoder.currentPosition;
@@ -47,16 +48,6 @@ void loop() {
     pwm.setPWM(0);
   } else
   {
-    // assign for re-test without initialRun
-    //        Serial.print("currentVelocity: ");
-    //        Serial.print(Wheel.encoder.maxVelocity);
-    //        Serial.print(" maxAcceleration: ");
-    //        Serial.println(Wheel.encoder.maxAcceleration);
-    //        Serial.print("   maxPositionChange: ");
-//    Serial.println(Wheel.encoder.currentPosition);
-//    Wheel.encoder.maxPositionChange = 1151;
-//    Wheel.encoder.maxVelocity  = 72;
-//    Wheel.encoder.maxAcceleration = 33;
     Wheel.encoder.updatePosition();
     if (Wheel.encoder.currentPosition > Wheel.encoder.maxValue) {
       Wheel.xAxis(32767);
@@ -72,16 +63,19 @@ void loop() {
     total_force = constrain(total_force, -255, 255);
     //  Serial.println(Wheel.encoder.currentPosition);
     //  when reach max and min wheel range, max force to prevent wheel goes over.
-    if (Wheel.encoder.currentPosition >= Wheel.encoder.maxValue) {
-      total_force = 255;
-    } else if (Wheel.encoder.currentPosition <= Wheel.encoder.minValue) {
-      total_force = -255;
+    //  increase the force as it goes over the max value and under the min value instead of hard stopping as its nicer on the motor and wheel.
+    if (Wheel.encoder.currentPosition >= Wheel.encoder.maxValue) 
+    {
+      total_force = min(255,Wheel.encoder.currentPosition - Wheel.encoder.maxValue);
+    } 
+    else if (Wheel.encoder.currentPosition <= Wheel.encoder.minValue) 
+    {
+      total_force = max(-255,Wheel.encoder.currentPosition - Wheel.encoder.minValue);
     }
   }
 //  set total gain = 0.2 need replace by wheelConfig.totalGain.
   pwm.setPWM(total_force * 0.2);
 }
-
 
 void gotoPosition(int32_t targetPosition) {
   Setpoint = targetPosition;
